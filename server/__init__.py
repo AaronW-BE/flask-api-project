@@ -2,7 +2,8 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from .bp import init_bp
+
+from . import resources, bp
 
 db = SQLAlchemy()
 
@@ -28,6 +29,8 @@ def create_app(test_config=None):
     db.init_app(app)
 
     bp.init_bp(app)
+
+    resources.init_resources(app)
 
     @app.route("/hello")
     def hello():
