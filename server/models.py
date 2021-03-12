@@ -1,4 +1,4 @@
-from . import db
+from . import db, jwt
 
 user_roles = db.Table(
     "user_roles",
@@ -37,6 +37,17 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
 
 
 class Profile(db.Model):
