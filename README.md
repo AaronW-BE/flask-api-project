@@ -13,7 +13,7 @@ A project kick starter for python flask framework
 * activate virtual environment: `venv\Scripts\activate`
 * install dependencies: `pip install -r requirement.txt`
 
-### Running for windows (dev mode)
+### Running for powershell (dev mode)
 ```shell
 $env:FLASK_APP="server"
 $env:FLASK_ENV="development"
