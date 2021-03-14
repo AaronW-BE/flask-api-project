@@ -8,10 +8,20 @@ A project kick starter for python flask framework
 * Flask-JWT-Extended
 * PyMySQL
 
-### Tree structure
+### Installing
+* set virtual env for python: `py -3 -m venv venv` (python 3 on windows)
+* activate virtual environment: `venv\Scripts\activate`
+* install dependencies: `pip install -r requirement.txt`
+
+### Running for windows (dev mode)
+```shell
+$env:FLASK_APP="server"
+$env:FLASK_ENV="development"
+flask run # start application
 ```
 
-
+### Tree structure
+```
 ┌─ server
 │   ├── resources
 │   │   ├── book.py

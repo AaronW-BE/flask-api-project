@@ -6,12 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended import JWTManager
 
-from . import resources, bp
-
 db = SQLAlchemy()
 jwt = JWTManager()
 
-jwt_excluded_paths = ["/auth/login", '/auth/register' "/healthy"]
+jwt_excluded_paths = ["/auth/login", "/auth/register", "/healthy", "/favicon.ico"]
 
 
 def create_app(test_config=None):
@@ -36,20 +34,19 @@ def create_app(test_config=None):
 
     jwt = JWTManager(app)
 
+    from . import resources, bp
     db.init_app(app)
-
     bp.init_bp(app)
 
     resources.init_resources(app)
 
     @app.before_request
     def before_request():
-        print(request.path)
         if request.path in jwt_excluded_paths:
             print("jwt validate ignored for [%s]" % request.path)
         else:
-            verify_jwt_in_request()
             print("jwt validate for [%s]" % request.path)
+            verify_jwt_in_request()
 
     @app.route("/healthy")
     def healthy():

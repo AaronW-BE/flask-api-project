@@ -1,4 +1,8 @@
-from . import db, jwt
+import datetime
+
+from werkzeug.security import generate_password_hash
+
+from server import db, jwt
 
 user_roles = db.Table(
     "user_roles",
@@ -30,10 +34,17 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
     phone = db.Column(db.String(16), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
     profile = db.relationship("Profile", backref='address', lazy=True)
-    permissions = db.relationship("Permission", secondary=user_permissions, lazy="subquery",
-                                  backref=db.backref("roles", lazy=True))
+    roles = db.relationship("Role", secondary=user_roles, backref=db.backref("users", lazy="dynamic"))
+
+    def __init__(self, username, password, phone=""):
+        self.username = username
+        self.phone = phone
+        self.password = generate_password_hash(password)
+        self.create_at = datetime.datetime.now()
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -59,8 +70,6 @@ class Profile(db.Model):
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False, comment="角色名")
-    permissions = db.relationship("Permission", secondary=user_roles, lazy="subquery",
-                                  backref=db.backref("roles", lazy=True))
 
 
 class Permission(db.Model):
