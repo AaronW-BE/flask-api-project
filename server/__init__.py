@@ -2,12 +2,15 @@ import os
 
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 jwt = JWTManager()
+ma = Marshmallow()
+jwt_block_list = []  # 可使用redis进行存储
 
 jwt_excluded_paths = ["/auth/login", "/auth/register", "/healthy", "/favicon.ico"]
 
@@ -37,6 +40,7 @@ def create_app(test_config=None):
     from . import resources, bp
     db.init_app(app)
     bp.init_bp(app)
+    ma.init_app(app)
 
     resources.init_resources(app)
 
@@ -51,6 +55,16 @@ def create_app(test_config=None):
     @app.route("/healthy")
     def healthy():
         return 'health'
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(jwt_header, jwt_payload):
+        jti = jwt_payload["jti"]
+        try:
+            jwt_block_list.index(jti)
+        except ValueError:
+            return False
+        else:
+            return True
 
     return app
 

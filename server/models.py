@@ -2,7 +2,7 @@ import datetime
 
 from werkzeug.security import generate_password_hash
 
-from server import db, jwt
+from server import db, jwt, ma
 
 user_roles = db.Table(
     "user_roles",
@@ -37,7 +37,7 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     create_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    profile = db.relationship("Profile", backref='address', lazy=True)
+    profile = db.relationship("Profile", uselist=False, backref='user', lazy=True)
     roles = db.relationship("Role", secondary=user_roles, backref=db.backref("users", lazy="dynamic"))
 
     def __init__(self, username, password, phone=""):
@@ -45,9 +45,6 @@ class User(db.Model):
         self.phone = phone
         self.password = generate_password_hash(password)
         self.create_at = datetime.datetime.now()
-
-    def __repr__(self):
-        return '<User %r>' % self.username
 
 
 @jwt.user_identity_loader
@@ -85,4 +82,15 @@ class Department(db.Model):
 class Audit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sn = db.Column(db.String(32), unique=True, comment="流水号")
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        fields = ("username", "id", "create_at", "last_login_at")
+
+
+class ProfileSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Profile
 
