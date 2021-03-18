@@ -11,6 +11,6 @@ def get_login_user_roles():
     return resp_success({})
 
 
-@bp.route('current-profile', method=['GET'])
+@bp.route('current-profile', methods=['GET'])
 def get_login_user_profile():
     return resp_success()
