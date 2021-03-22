@@ -10,7 +10,7 @@ class BookList(Resource):
         pass
 
     def get(self):
-        books = BookModel.query.paginate(page=1)
+        books = BookModel.query.paginate(page=1, per_page=2)
         books_schema = BookSchema(many=True)
         return resp_paginate(books, books_schema)
 

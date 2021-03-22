@@ -12,7 +12,7 @@ jwt = JWTManager()
 ma = Marshmallow()
 jwt_block_list = []  # 可使用redis进行存储
 
-jwt_excluded_paths = ["/auth/login", "/books", "/auth/register", "/healthy", "/favicon.ico"]
+jwt_excluded_paths = ['/', "/auth/login", "/books", "/auth/register", "/healthy", "/favicon.ico"]
 
 
 def create_app(test_config=None):
@@ -51,6 +51,10 @@ def create_app(test_config=None):
         else:
             print("jwt validate for [%s]" % request.path)
             verify_jwt_in_request()
+
+    @app.route("/")
+    def index():
+        return "it's ok"
 
     @app.route("/healthy")
     def healthy():
