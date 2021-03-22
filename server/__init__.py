@@ -12,7 +12,7 @@ jwt = JWTManager()
 ma = Marshmallow()
 jwt_block_list = []  # 可使用redis进行存储
 
-jwt_excluded_paths = ["/auth/login", "/auth/register", "/healthy", "/favicon.ico"]
+jwt_excluded_paths = ["/auth/login", "/books", "/auth/register", "/healthy", "/favicon.ico"]
 
 
 def create_app(test_config=None):

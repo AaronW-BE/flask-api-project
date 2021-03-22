@@ -1,4 +1,7 @@
 from flask_restful import reqparse, abort, Api, Resource
+from server.models import Book as BookModel
+from server.models import BookSchema
+from server.utils.response import resp_success, resp_paginate
 
 
 class BookList(Resource):
@@ -7,14 +10,9 @@ class BookList(Resource):
         pass
 
     def get(self):
-        return [
-            {
-                "title": "game of throne",
-            },
-            {
-                "title": "game of throne",
-            }
-        ]
+        books = BookModel.query.paginate(page=1)
+        books_schema = BookSchema(many=True)
+        return resp_paginate(books, books_schema)
 
     def post(self):
         parser = reqparse.RequestParser()

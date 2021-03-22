@@ -94,3 +94,15 @@ class ProfileSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Profile
 
+
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    isbn = db.Column(db.String(32), unique=True)
+    title = db.Column(db.String(64))
+    price = db.Column(db.Float)
+    express = db.Column(db.String(64))
+
+
+class BookSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Book
